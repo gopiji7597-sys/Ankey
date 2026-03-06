@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exam Answer Checker - Permanent Storage</title>
+    <title>Exam Answer Checker - Admin Backup/Restore</title>
     <style>
         * {
             margin: 0;
@@ -43,13 +43,7 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .admin-btn {
+        .admin-login-btn {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
@@ -64,49 +58,9 @@
             transition: all 0.3s;
         }
 
-        .admin-btn:hover {
+        .admin-login-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(102,126,234,0.4);
-        }
-
-        .backup-btn {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .backup-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(40,167,69,0.4);
-        }
-
-        .restore-btn {
-            background: linear-gradient(135deg, #ffc107, #fd7e14);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .restore-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255,193,7,0.4);
         }
 
         /* Main Card */
@@ -159,11 +113,6 @@
             margin-bottom: 20px;
         }
 
-        .password-input:focus {
-            border-color: #667eea;
-            outline: none;
-        }
-
         .login-btn {
             width: 100%;
             padding: 15px;
@@ -201,7 +150,7 @@
             color: #333;
         }
 
-        /* Admin Panel */
+        /* Admin Panel - Students ko nahi dikhega */
         .admin-panel {
             display: none;
             margin-top: 30px;
@@ -245,7 +194,6 @@
 
         .logout-btn:hover {
             background: #c82333;
-            transform: translateY(-2px);
         }
 
         /* Admin Forms */
@@ -280,13 +228,6 @@
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 14px;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            border-color: #667eea;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
         }
 
         .btn {
@@ -308,16 +249,63 @@
             box-shadow: 0 10px 30px rgba(102,126,234,0.4);
         }
 
-        .btn-danger {
-            background: linear-gradient(135deg, #dc3545, #c82333);
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #218838);
         }
 
         .btn-warning {
             background: linear-gradient(135deg, #ffc107, #e0a800);
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, #28a745, #218838);
+        /* Backup Buttons - सिर्फ Admin Panel mein */
+        .backup-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #28a745;
+        }
+
+        .backup-section h3 {
+            color: #28a745;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #28a745;
+        }
+
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .backup-buttons .btn {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .file-input {
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .success-message.show {
+            display: block;
         }
 
         /* Answer Grid */
@@ -329,23 +317,6 @@
             max-height: 400px;
             overflow-y: auto;
             background: white;
-        }
-
-        .answer-grid-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .question-count-badge {
-            background: #667eea;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 50px;
-            font-size: 0.9em;
         }
 
         .answers-grid {
@@ -360,19 +331,6 @@
             padding: 8px;
             text-align: center;
             border: 1px solid #e0e0e0;
-            transition: all 0.3s;
-        }
-
-        .answer-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102,126,234,0.2);
-        }
-
-        .answer-item label {
-            display: block;
-            font-size: 0.8em;
-            color: #666;
-            margin-bottom: 5px;
         }
 
         .answer-item select {
@@ -380,15 +338,6 @@
             padding: 5px;
             border: 2px solid #e0e0e0;
             border-radius: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            background: white;
-            cursor: pointer;
-        }
-
-        .answer-item select:focus {
-            border-color: #667eea;
-            outline: none;
         }
 
         /* Quick Fill */
@@ -406,13 +355,11 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
-            transition: all 0.3s;
         }
 
         .quick-fill-btn:hover {
             background: #667eea;
             color: white;
-            transform: translateY(-2px);
         }
 
         /* Data Cards */
@@ -423,12 +370,6 @@
             margin-bottom: 10px;
             border-left: 4px solid #667eea;
             position: relative;
-            transition: all 0.3s;
-        }
-
-        .data-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(102,126,234,0.2);
         }
 
         .delete-btn {
@@ -442,12 +383,6 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 12px;
-            transition: all 0.3s;
-        }
-
-        .delete-btn:hover {
-            background: #c82333;
-            transform: scale(1.1);
         }
 
         .set-badge {
@@ -493,13 +428,11 @@
             color: #999;
             position: relative;
             z-index: 2;
-            transition: all 0.3s;
         }
 
         .step.active {
             border-color: #667eea;
             color: #667eea;
-            transform: scale(1.1);
         }
 
         .step.completed {
@@ -528,31 +461,11 @@
             border-radius: 15px;
         }
 
-        .select-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-
         .select-group select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
-            font-size: 16px;
-            background: white;
-            cursor: pointer;
-        }
-
-        .select-group select:focus {
-            border-color: #667eea;
-            outline: none;
-        }
-
-        .select-group select:disabled {
-            background: #f0f0f0;
-            cursor: not-allowed;
         }
 
         .answers-section {
@@ -561,12 +474,6 @@
 
         .answers-section.active {
             display: block;
-            animation: fadeIn 0.5s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .check-btn {
@@ -580,20 +487,8 @@
             cursor: pointer;
             width: 100%;
             margin: 20px 0;
-            transition: all 0.3s;
         }
 
-        .check-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(102,126,234,0.4);
-        }
-
-        .check-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Loading Spinner */
         .loading {
             display: none;
             text-align: center;
@@ -602,7 +497,6 @@
 
         .loading.show {
             display: block;
-            animation: fadeIn 0.5s;
         }
 
         .spinner {
@@ -620,7 +514,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Result Card */
         .result-card {
             background: linear-gradient(135deg, #f5f7fa 0%, #e9ecf1 100%);
             border-radius: 20px;
@@ -632,12 +525,6 @@
 
         .result-card.show {
             display: block;
-            animation: slideUp 0.5s;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .match-info {
@@ -646,12 +533,6 @@
             padding: 15px;
             margin: 20px 0;
             text-align: center;
-            border: 2px dashed #667eea;
-        }
-
-        .match-info p {
-            margin: 5px 0;
-            font-size: 1.1em;
         }
 
         .count-badge {
@@ -666,19 +547,16 @@
         .count-badge.correct {
             background: #d4edda;
             color: #28a745;
-            border: 1px solid #28a745;
         }
 
         .count-badge.wrong {
             background: #f8d7da;
             color: #dc3545;
-            border: 1px solid #dc3545;
         }
 
         .count-badge.unattempted {
             background: #fff3cd;
             color: #ffc107;
-            border: 1px solid #ffc107;
         }
 
         .new-check {
@@ -689,77 +567,22 @@
             border-radius: 10px;
             cursor: pointer;
             margin-top: 20px;
-            font-size: 1.1em;
-            transition: all 0.3s;
-        }
-
-        .new-check:hover {
-            background: #e0e0e0;
-            transform: translateY(-2px);
-        }
-
-        /* Backup/Restore Section */
-        .backup-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        .backup-section h3 {
-            color: #333;
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .file-input {
-            margin: 10px 0;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            width: 100%;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            display: none;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .success-message.show {
-            display: block;
-            animation: fadeIn 0.5s;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
+        <!-- Header - Students ko sirf yahi dikhega -->
         <div class="header">
-            <h1>📝 Exam Answer Checker - Permanent Storage</h1>
-            <div class="header-buttons">
-                <button class="backup-btn" onclick="backupData()">
-                    💾 Backup Data
-                </button>
-                <button class="restore-btn" onclick="document.getElementById('restoreFile').click()">
-                    🔄 Restore Data
-                </button>
-                <input type="file" id="restoreFile" style="display: none;" accept=".json" onchange="restoreData(event)">
-                <button class="admin-btn" onclick="openLoginModal()">
-                    🔐 Admin Panel
-                </button>
-            </div>
+            <h1>📝 Exam Answer Checker</h1>
+            <button class="admin-login-btn" onclick="openLoginModal()">
+                🔐 Admin Login
+            </button>
         </div>
 
         <!-- Main Card -->
         <div class="main-card">
-            <!-- Student Section -->
+            <!-- Student Section - सभी students को दिखेगा -->
             <div id="studentSection">
                 <div class="progress-steps">
                     <div class="step active" id="step1">1<span class="step-label">Exam</span></div>
@@ -798,9 +621,7 @@
                 <div class="result-card" id="resultCard">
                     <h2 style="text-align: center;">🎉 आपका परिणाम</h2>
                     
-                    <div class="match-info" id="matchInfo">
-                        <!-- Match info will be inserted here -->
-                    </div>
+                    <div class="match-info" id="matchInfo"></div>
 
                     <div style="text-align: center; margin: 20px 0;">
                         <span class="count-badge correct" id="correctCount">✅ सही: 0</span>
@@ -812,11 +633,36 @@
                 </div>
             </div>
 
-            <!-- Admin Panel -->
+            <!-- Admin Panel - सिर्फ login करने पर दिखेगा, students को नहीं -->
             <div class="admin-panel" id="adminPanel">
                 <div class="admin-header">
                     <h2>👑 Admin Control Panel</h2>
                     <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+
+                <!-- Backup & Restore Section - सिर्फ Admin Panel में, students को नहीं दिखेगा -->
+                <div class="backup-section">
+                    <h3>💾 Backup & Restore (केवल Admin के लिए)</h3>
+                    
+                    <div class="backup-buttons">
+                        <button class="btn btn-success" onclick="backupData()">
+                            💾 Backup Data Download
+                        </button>
+                        <button class="btn btn-warning" onclick="document.getElementById('restoreFile').click()">
+                            🔄 Restore Data
+                        </button>
+                    </div>
+                    
+                    <input type="file" id="restoreFile" style="display: none;" accept=".json" onchange="restoreData(event)">
+                    
+                    <div class="success-message" id="backupMessage"></div>
+                    
+                    <p style="color: #666; font-size: 0.9em; margin-top: 10px; background: #fff; padding: 10px; border-radius: 5px;">
+                        ⚠️ <strong>निर्देश:</strong><br>
+                        • Backup लेना न भूलें<br>
+                        • Restore करने पर मौजूदा data overwrite होगा<br>
+                        • Backup file .json format में होनी चाहिए
+                    </p>
                 </div>
 
                 <!-- Create Exam -->
@@ -842,7 +688,7 @@
                     <h3>⏰ Shift और Sets जोड़ें</h3>
                     <div class="form-group">
                         <label>Exam चुनें:</label>
-                        <select id="adminExamSelect" onchange="updateExamQuestionCount()">
+                        <select id="adminExamSelect">
                             <option value="">-- Select exam --</option>
                         </select>
                     </div>
@@ -872,18 +718,12 @@
                     </div>
 
                     <div id="answerKeySection" style="display: none;">
-                        <div class="answer-grid-header">
-                            <h4>Answers भरें</h4>
-                            <span class="question-count-badge" id="currentQuestionCount">0 Questions</span>
-                        </div>
-
                         <div class="quick-fill-options">
                             <div class="quick-fill-btn" onclick="quickFillAll('A')">All A</div>
                             <div class="quick-fill-btn" onclick="quickFillAll('B')">All B</div>
                             <div class="quick-fill-btn" onclick="quickFillAll('C')">All C</div>
                             <div class="quick-fill-btn" onclick="quickFillAll('D')">All D</div>
                             <div class="quick-fill-btn" onclick="quickFillPattern('ABCD')">ABCD</div>
-                            <div class="quick-fill-btn" onclick="quickFillPattern('ABAB')">ABAB</div>
                             <div class="quick-fill-btn" onclick="quickFillRandom()">Random</div>
                             <div class="quick-fill-btn" onclick="clearAnswers()">Clear</div>
                         </div>
@@ -896,23 +736,13 @@
                     </div>
                 </div>
 
-                <!-- Data Display with Delete Options -->
+                <!-- Data Display -->
                 <div class="admin-form">
-                    <h3>📊 मौजूदा Data (Delete करने के लिए ✖ पर क्लिक करें)</h3>
+                    <h3>📊 मौजूदा Data</h3>
                     <div id="examsList"></div>
                     <div id="shiftsList"></div>
                     <div id="setsList"></div>
                     <div id="keysList"></div>
-                </div>
-
-                <!-- Backup/Restore Section -->
-                <div class="backup-section">
-                    <h3>💾 Backup & Restore</h3>
-                    <div class="success-message" id="backupMessage">✅ Data successfully backed up/restored!</div>
-                    <button class="btn btn-success" onclick="backupData()">📥 Data Backup Download करें</button>
-                    <br>
-                    <input type="file" id="restoreFileInput" class="file-input" accept=".json" onchange="restoreData(event)">
-                    <button class="btn btn-warning" onclick="document.getElementById('restoreFileInput').click()">📤 Data Restore करें</button>
                 </div>
             </div>
         </div>
@@ -942,24 +772,14 @@
         let currentQuestionCount = 100;
         let currentSetId = null;
 
-        // ==================== PERMANENT STORAGE FUNCTIONS ====================
-        
-        // Load data from localStorage
+        // ==================== LOAD/SAVE DATA ====================
         function loadData() {
             try {
                 const saved = localStorage.getItem('examData');
                 if (saved) {
                     examData = JSON.parse(saved);
-                } else {
-                    // Try to load from backup in localStorage
-                    const backup = localStorage.getItem('examData_backup');
-                    if (backup) {
-                        examData = JSON.parse(backup);
-                        saveData();
-                    }
                 }
                 
-                // Validate data structure
                 if (!examData.exams) examData.exams = [];
                 if (!examData.shifts) examData.shifts = [];
                 if (!examData.sets) examData.sets = [];
@@ -969,32 +789,21 @@
                 displayData();
             } catch (error) {
                 console.error('Error loading data:', error);
-                examData = { exams: [], shifts: [], sets: [], answerKeys: [] };
             }
         }
 
-        // Save data to localStorage with backup
         function saveData() {
             try {
-                // Main save
                 localStorage.setItem('examData', JSON.stringify(examData));
-                
-                // Create backup copy
-                localStorage.setItem('examData_backup', JSON.stringify(examData));
-                
-                // Also save to sessionStorage as additional backup
-                sessionStorage.setItem('examData_backup', JSON.stringify(examData));
-                
                 updateAllDropdowns();
                 displayData();
                 showMessage('Data saved successfully!');
             } catch (error) {
                 console.error('Error saving data:', error);
-                alert('Error saving data: ' + error.message);
             }
         }
 
-        // Backup data to file
+        // ==================== BACKUP & RESTORE (सिर्फ Admin Panel में) ====================
         function backupData() {
             try {
                 const dataStr = JSON.stringify(examData, null, 2);
@@ -1003,21 +812,19 @@
                 
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `exam_data_backup_${new Date().toISOString().slice(0,10)}.json`;
+                a.download = `exam_backup_${new Date().toISOString().slice(0,10)}.json`;
                 a.click();
                 
-                showMessage('Backup downloaded successfully!');
+                showMessage('✅ Backup downloaded successfully!');
             } catch (error) {
                 alert('Error creating backup: ' + error.message);
             }
         }
 
-        // Restore data from file
         function restoreData(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            // Check file type
             if (!file.name.endsWith('.json')) {
                 alert('कृपया JSON file चुनें');
                 return;
@@ -1028,27 +835,19 @@
                 try {
                     const restoredData = JSON.parse(e.target.result);
                     
-                    // Validate data structure
-                    if (!restoredData.exams || !Array.isArray(restoredData.exams)) {
-                        throw new Error('Invalid exams data');
-                    }
-                    if (!restoredData.shifts || !Array.isArray(restoredData.shifts)) {
-                        throw new Error('Invalid shifts data');
-                    }
-                    if (!restoredData.sets || !Array.isArray(restoredData.sets)) {
-                        throw new Error('Invalid sets data');
-                    }
-                    if (!restoredData.answerKeys || !Array.isArray(restoredData.answerKeys)) {
-                        throw new Error('Invalid answer keys data');
+                    // Validate structure
+                    if (!restoredData.exams || !Array.isArray(restoredData.exams) ||
+                        !restoredData.shifts || !Array.isArray(restoredData.shifts) ||
+                        !restoredData.sets || !Array.isArray(restoredData.sets) ||
+                        !restoredData.answerKeys || !Array.isArray(restoredData.answerKeys)) {
+                        throw new Error('Invalid backup file format');
                     }
                     
-                    // Confirm before overwriting
-                    if (confirm('मौजूदा data overwrite हो जाएगा। क्या आप restore करना चाहते हैं?')) {
+                    if (confirm('⚠️ मौजूदा data overwrite हो जाएगा। क्या आप restore करना चाहते हैं?')) {
                         examData = restoredData;
                         saveData();
-                        showMessage('Data restored successfully!');
+                        showMessage('✅ Data restored successfully!');
                         
-                        // Refresh the page after 1.5 seconds
                         setTimeout(() => {
                             location.reload();
                         }, 1500);
@@ -1059,14 +858,12 @@
             };
             reader.readAsText(file);
             
-            // Clear file input
             event.target.value = '';
         }
 
-        // Show success message
         function showMessage(msg) {
             const msgEl = document.getElementById('backupMessage');
-            msgEl.textContent = '✅ ' + msg;
+            msgEl.textContent = msg;
             msgEl.classList.add('show');
             setTimeout(() => {
                 msgEl.classList.remove('show');
@@ -1074,91 +871,47 @@
         }
 
         // ==================== DELETE FUNCTIONS ====================
-        
         function deleteExam(examId) {
-            if (confirm('⚠️ क्या आप इस exam को और इससे जुड़े सारे shifts, sets, answer keys को DELETE करना चाहते हैं?')) {
-                try {
-                    // Get all shifts of this exam
-                    const shiftsToDelete = examData.shifts.filter(s => s.examId === examId);
-                    
-                    shiftsToDelete.forEach(shift => {
-                        // Get all sets of this shift
-                        const setsToDelete = examData.sets.filter(s => s.shiftId === shift.id);
-                        
-                        setsToDelete.forEach(set => {
-                            // Delete answer keys of this set
-                            examData.answerKeys = examData.answerKeys.filter(k => k.setId !== set.id);
-                        });
-                        
-                        // Delete sets
-                        examData.sets = examData.sets.filter(s => s.shiftId !== shift.id);
-                    });
-                    
-                    // Delete shifts
-                    examData.shifts = examData.shifts.filter(s => s.examId !== examId);
-                    
-                    // Delete exam
-                    examData.exams = examData.exams.filter(e => e.id !== examId);
-                    
-                    saveData();
-                    alert('✅ Exam and all related data deleted successfully!');
-                } catch (error) {
-                    alert('Error deleting exam: ' + error.message);
-                }
+            if (confirm('⚠️ क्या आप इस exam को DELETE करना चाहते हैं?')) {
+                examData.exams = examData.exams.filter(e => e.id !== examId);
+                examData.shifts = examData.shifts.filter(s => s.examId !== examId);
+                examData.sets = examData.sets.filter(s => {
+                    const shift = examData.shifts.find(sh => sh.id === s.shiftId);
+                    return shift?.examId !== examId;
+                });
+                examData.answerKeys = examData.answerKeys.filter(k => {
+                    const set = examData.sets.find(s => s.id === k.setId);
+                    const shift = examData.shifts.find(s => s.id === set?.shiftId);
+                    return shift?.examId !== examId;
+                });
+                saveData();
             }
         }
 
         function deleteShift(shiftId) {
-            if (confirm('⚠️ क्या आप इस shift और इससे जुड़े सारे sets, answer keys को DELETE करना चाहते हैं?')) {
-                try {
-                    // Get all sets of this shift
-                    const setsToDelete = examData.sets.filter(s => s.shiftId === shiftId);
-                    
-                    setsToDelete.forEach(set => {
-                        // Delete answer keys of this set
-                        examData.answerKeys = examData.answerKeys.filter(k => k.setId !== set.id);
-                    });
-                    
-                    // Delete sets
-                    examData.sets = examData.sets.filter(s => s.shiftId !== shiftId);
-                    
-                    // Delete shift
-                    examData.shifts = examData.shifts.filter(s => s.id !== shiftId);
-                    
-                    saveData();
-                    alert('✅ Shift and all related data deleted successfully!');
-                } catch (error) {
-                    alert('Error deleting shift: ' + error.message);
-                }
+            if (confirm('⚠️ क्या आप इस shift को DELETE करना चाहते हैं?')) {
+                examData.shifts = examData.shifts.filter(s => s.id !== shiftId);
+                examData.sets = examData.sets.filter(s => s.shiftId !== shiftId);
+                examData.answerKeys = examData.answerKeys.filter(k => {
+                    const set = examData.sets.find(s => s.id === k.setId);
+                    return set?.shiftId !== shiftId;
+                });
+                saveData();
             }
         }
 
         function deleteSet(setId) {
-            if (confirm('⚠️ क्या आप इस set और इसकी answer key को DELETE करना चाहते हैं?')) {
-                try {
-                    // Delete answer key of this set
-                    examData.answerKeys = examData.answerKeys.filter(k => k.setId !== setId);
-                    
-                    // Delete set
-                    examData.sets = examData.sets.filter(s => s.id !== setId);
-                    
-                    saveData();
-                    alert('✅ Set deleted successfully!');
-                } catch (error) {
-                    alert('Error deleting set: ' + error.message);
-                }
+            if (confirm('⚠️ क्या आप इस set को DELETE करना चाहते हैं?')) {
+                examData.sets = examData.sets.filter(s => s.id !== setId);
+                examData.answerKeys = examData.answerKeys.filter(k => k.setId !== setId);
+                saveData();
             }
         }
 
         function deleteAnswerKey(keyId) {
             if (confirm('⚠️ क्या आप इस answer key को DELETE करना चाहते हैं?')) {
-                try {
-                    examData.answerKeys = examData.answerKeys.filter(k => k.id !== keyId);
-                    saveData();
-                    alert('✅ Answer key deleted successfully!');
-                } catch (error) {
-                    alert('Error deleting answer key: ' + error.message);
-                }
+                examData.answerKeys = examData.answerKeys.filter(k => k.id !== keyId);
+                saveData();
             }
         }
 
@@ -1200,13 +953,8 @@
                 return;
             }
 
-            if (totalQ < 1) {
-                alert('Questions की संख्या 1 से अधिक होनी चाहिए');
-                return;
-            }
-
             examData.exams.push({
-                id: 'exam_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                id: 'exam_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
                 name: name,
                 date: date,
                 totalQuestions: totalQ
@@ -1216,15 +964,7 @@
             
             document.getElementById('examName').value = '';
             document.getElementById('examDate').value = '';
-            alert('✅ Exam successfully created!');
-        }
-
-        function updateExamQuestionCount() {
-            const examId = document.getElementById('adminExamSelect').value;
-            const exam = examData.exams.find(e => e.id === examId);
-            if (exam) {
-                currentQuestionCount = exam.totalQuestions;
-            }
+            alert('✅ Exam created!');
         }
 
         function addShift() {
@@ -1238,15 +978,7 @@
                 return;
             }
 
-            if (setCount < 1 || setCount > 24) {
-                alert('Sets की संख्या 1 से 24 के बीच होनी चाहिए');
-                return;
-            }
-
-            const exam = examData.exams.find(e => e.id === examId);
-            if (!exam) return;
-
-            const shiftId = 'shift_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const shiftId = 'shift_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
             
             examData.shifts.push({
                 id: shiftId,
@@ -1258,7 +990,7 @@
             for (let i = 0; i < setCount; i++) {
                 const setCode = String.fromCharCode(65 + i);
                 examData.sets.push({
-                    id: `set_${shiftId}_${setCode}_${Math.random().toString(36).substr(2, 5)}`,
+                    id: `set_${shiftId}_${setCode}_${Math.random().toString(36).substr(2, 3)}`,
                     shiftId: shiftId,
                     setCode: setCode
                 });
@@ -1266,7 +998,7 @@
 
             saveData();
             document.getElementById('shiftTime').value = '';
-            alert(`✅ Shift ${shiftNumber} added with ${setCount} sets!`);
+            alert(`✅ Shift added with ${setCount} sets!`);
         }
 
         function loadAnswersForSet() {
@@ -1278,59 +1010,44 @@
 
             currentSetId = setId;
             
-            try {
-                // Find exam for this set
-                const set = examData.sets.find(s => s.id === setId);
-                const shift = examData.shifts.find(s => s.id === set?.shiftId);
-                const exam = examData.exams.find(e => e.id === shift?.examId);
-                
-                if (exam) {
-                    currentQuestionCount = exam.totalQuestions;
-                    document.getElementById('currentQuestionCount').textContent = currentQuestionCount + ' Questions';
-                    generateAdminAnswerGrid();
-                    document.getElementById('answerKeySection').style.display = 'block';
-                }
+            const set = examData.sets.find(s => s.id === setId);
+            const shift = examData.shifts.find(s => s.id === set?.shiftId);
+            const exam = examData.exams.find(e => e.id === shift?.examId);
+            
+            if (exam) {
+                currentQuestionCount = exam.totalQuestions;
+                generateAdminAnswerGrid();
+                document.getElementById('answerKeySection').style.display = 'block';
+            }
 
-                // Load existing answers if any
-                const answerKey = examData.answerKeys.find(k => k.setId === setId);
-                if (answerKey) {
-                    for (let i = 1; i <= currentQuestionCount; i++) {
-                        const select = document.getElementById(`admin_ans_${i}`);
-                        if (select && answerKey.answers && answerKey.answers[i-1]) {
-                            select.value = answerKey.answers[i-1];
-                        }
-                    }
-                } else {
-                    // Clear all selections
-                    for (let i = 1; i <= currentQuestionCount; i++) {
-                        const select = document.getElementById(`admin_ans_${i}`);
-                        if (select) select.value = '';
+            const answerKey = examData.answerKeys.find(k => k.setId === setId);
+            if (answerKey) {
+                for (let i = 1; i <= currentQuestionCount; i++) {
+                    const select = document.getElementById(`admin_ans_${i}`);
+                    if (select && answerKey.answers[i-1]) {
+                        select.value = answerKey.answers[i-1];
                     }
                 }
-            } catch (error) {
-                console.error('Error loading answers:', error);
             }
         }
 
         function generateAdminAnswerGrid() {
             const grid = document.getElementById('adminAnswerGrid');
             grid.innerHTML = '';
-            grid.style.gridTemplateColumns = `repeat(${Math.min(8, currentQuestionCount)}, 1fr)`;
             
             for (let i = 1; i <= currentQuestionCount; i++) {
-                const div = document.createElement('div');
-                div.className = 'answer-item';
-                div.innerHTML = `
-                    <label>Q${i}</label>
-                    <select id="admin_ans_${i}">
-                        <option value="">-</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                    </select>
+                grid.innerHTML += `
+                    <div class="answer-item">
+                        <label>Q${i}</label>
+                        <select id="admin_ans_${i}">
+                            <option value="">-</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
                 `;
-                grid.appendChild(div);
             }
         }
 
@@ -1346,8 +1063,7 @@
             for (let i = 1; i <= currentQuestionCount; i++) {
                 const select = document.getElementById(`admin_ans_${i}`);
                 if (select) {
-                    const patternIndex = (i - 1) % patternArray.length;
-                    select.value = patternArray[patternIndex];
+                    select.value = patternArray[(i-1) % patternArray.length];
                 }
             }
         }
@@ -1381,31 +1097,20 @@
                 answers.push(select?.value || '');
             }
 
-            // Check if any answers are empty
-            const emptyCount = answers.filter(a => a === '').length;
-            if (emptyCount > 0) {
-                if (!confirm(`${emptyCount} answers empty hain. Save karna hai?`)) {
-                    return;
-                }
-            }
-
             const existingIndex = examData.answerKeys.findIndex(k => k.setId === currentSetId);
             
             if (existingIndex >= 0) {
                 examData.answerKeys[existingIndex].answers = answers;
-                examData.answerKeys[existingIndex].lastUpdated = new Date().toISOString();
             } else {
                 examData.answerKeys.push({
-                    id: 'key_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    id: 'key_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
                     setId: currentSetId,
-                    answers: answers,
-                    created: new Date().toISOString(),
-                    lastUpdated: new Date().toISOString()
+                    answers: answers
                 });
             }
 
             saveData();
-            alert('✅ Answer key successfully saved!');
+            alert('✅ Answer key saved!');
         }
 
         // ==================== FIND BEST MATCHING SET ====================
@@ -1415,58 +1120,39 @@
                 correctCount: 0,
                 wrongCount: 0,
                 unattemptedCount: 0,
-                matchPercent: 0,
-                matchedSet: null,
-                answerKey: null
+                matchPercent: 0
             };
 
-            try {
-                // Get all sets for this shift
-                const sets = examData.sets.filter(s => s.shiftId === shiftId);
+            const sets = examData.sets.filter(s => s.shiftId === shiftId);
+            
+            sets.forEach(set => {
+                const answerKey = examData.answerKeys.find(k => k.setId === set.id);
+                if (!answerKey || !answerKey.answers) return;
+
+                let correct = 0, wrong = 0, unattempted = 0;
                 
-                if (sets.length === 0) {
-                    return bestMatch;
+                for (let i = 0; i < studentAnswers.length; i++) {
+                    if (!studentAnswers[i]) {
+                        unattempted++;
+                    } else if (answerKey.answers[i] && studentAnswers[i] === answerKey.answers[i]) {
+                        correct++;
+                    } else {
+                        wrong++;
+                    }
                 }
 
-                sets.forEach(set => {
-                    // Find answer key for this set
-                    const answerKey = examData.answerKeys.find(k => k.setId === set.id);
-                    if (!answerKey || !answerKey.answers) return;
-
-                    // Calculate matches
-                    let correct = 0;
-                    let wrong = 0;
-                    let unattempted = 0;
-                    
-                    for (let i = 0; i < studentAnswers.length; i++) {
-                        if (!studentAnswers[i]) {
-                            unattempted++;
-                        } else if (answerKey.answers[i] && studentAnswers[i] === answerKey.answers[i]) {
-                            correct++;
-                        } else {
-                            wrong++;
-                        }
-                    }
-
-                    const totalAnswered = correct + wrong;
-                    const percent = totalAnswered > 0 ? (correct / totalAnswered) * 100 : 0;
-                    
-                    // Update best match if this is better
-                    if (correct > bestMatch.correctCount) {
-                        bestMatch = {
-                            setCode: set.setCode,
-                            correctCount: correct,
-                            wrongCount: wrong,
-                            unattemptedCount: unattempted,
-                            matchPercent: percent,
-                            matchedSet: set,
-                            answerKey: answerKey.answers
-                        };
-                    }
-                });
-            } catch (error) {
-                console.error('Error finding best match:', error);
-            }
+                const percent = (correct / (correct + wrong)) * 100 || 0;
+                
+                if (correct > bestMatch.correctCount) {
+                    bestMatch = {
+                        setCode: set.setCode,
+                        correctCount: correct,
+                        wrongCount: wrong,
+                        unattemptedCount: unattempted,
+                        matchPercent: percent
+                    };
+                }
+            });
 
             return bestMatch;
         }
@@ -1477,7 +1163,6 @@
             if (!examId) {
                 document.getElementById('shiftSelect').disabled = true;
                 document.getElementById('answersSection').classList.remove('active');
-                document.getElementById('resultCard').classList.remove('show');
                 updateProgressSteps(1);
                 return;
             }
@@ -1491,104 +1176,72 @@
             shiftSelect.disabled = false;
             shiftSelect.innerHTML = '<option value="">-- Select Shift --</option>';
             
-            const shifts = examData.shifts.filter(s => s.examId === examId);
-            shifts.sort((a, b) => a.shiftNumber - b.shiftNumber);
-            
-            shifts.forEach(shift => {
-                shiftSelect.innerHTML += `<option value="${shift.id}">Shift ${shift.shiftNumber} - ${shift.time}</option>`;
+            examData.shifts.filter(s => s.examId === examId).forEach(shift => {
+                shiftSelect.innerHTML += `<option value="${shift.id}">Shift ${shift.shiftNumber}</option>`;
             });
 
             updateProgressSteps(2);
         }
 
         function onShiftChange() {
-            const shiftId = document.getElementById('shiftSelect').value;
-            if (!shiftId) {
-                document.getElementById('answersSection').classList.remove('active');
-                return;
-            }
-
-            generateStudentAnswerGrid();
             document.getElementById('answersSection').classList.add('active');
-            document.getElementById('resultCard').classList.remove('show');
+            generateStudentAnswerGrid();
             updateProgressSteps(3);
         }
 
         function generateStudentAnswerGrid() {
             const grid = document.getElementById('studentAnswersGrid');
             grid.innerHTML = '';
-            grid.style.gridTemplateColumns = `repeat(${Math.min(5, currentQuestionCount)}, 1fr)`;
             
             for (let i = 1; i <= currentQuestionCount; i++) {
-                const div = document.createElement('div');
-                div.className = 'answer-item';
-                div.innerHTML = `
-                    <label>Q${i}</label>
-                    <select id="student_ans_${i}" class="student-select">
-                        <option value="">-</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                    </select>
+                grid.innerHTML += `
+                    <div class="answer-item">
+                        <label>Q${i}</label>
+                        <select id="student_ans_${i}">
+                            <option value="">-</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
                 `;
-                grid.appendChild(div);
             }
         }
 
         function checkAnswers() {
             const shiftId = document.getElementById('shiftSelect').value;
-            if (!shiftId) {
-                alert('पहले shift चुनें');
-                return;
-            }
-
-            // Get student answers
             const studentAnswers = [];
+            
             for (let i = 1; i <= currentQuestionCount; i++) {
-                const select = document.getElementById(`student_ans_${i}`);
-                studentAnswers.push(select?.value || '');
+                studentAnswers.push(document.getElementById(`student_ans_${i}`)?.value || '');
             }
 
-            // Check if at least some answers are filled
-            const answeredCount = studentAnswers.filter(a => a !== '').length;
-            if (answeredCount === 0) {
-                alert('कृपया कम से कम कुछ questions के answers चुनें');
+            if (studentAnswers.filter(a => a !== '').length === 0) {
+                alert('कृपया answers चुनें');
                 return;
             }
 
-            // Show loading
             document.getElementById('loading').classList.add('show');
             document.getElementById('checkBtn').disabled = true;
 
-            // Find best matching set (with slight delay for UX)
             setTimeout(() => {
-                try {
-                    const result = findBestMatchingSet(shiftId, studentAnswers);
-                    
-                    // Update match info
-                    const matchInfo = document.getElementById('matchInfo');
-                    matchInfo.innerHTML = `
-                        <p>🎯 Best Match: <strong>Set ${result.setCode}</strong></p>
-                        <p>📊 Accuracy: <strong>${result.matchPercent.toFixed(1)}%</strong></p>
-                        <p>✅ Correct: ${result.correctCount} | ❌ Wrong: ${result.wrongCount} | ⭕ Unattempted: ${result.unattemptedCount}</p>
-                    `;
-                    
-                    // Update counts
-                    document.getElementById('correctCount').innerHTML = `✅ सही: ${result.correctCount}`;
-                    document.getElementById('wrongCount').innerHTML = `❌ गलत: ${result.wrongCount}`;
-                    document.getElementById('unattemptedCount').innerHTML = `⭕ छोड़े: ${result.unattemptedCount}`;
-                    
-                    document.getElementById('resultCard').classList.add('show');
-                    updateProgressSteps(4);
-                } catch (error) {
-                    console.error('Error checking answers:', error);
-                    alert('Error checking answers: ' + error.message);
-                } finally {
-                    // Hide loading
-                    document.getElementById('loading').classList.remove('show');
-                    document.getElementById('checkBtn').disabled = false;
-                }
+                const result = findBestMatchingSet(shiftId, studentAnswers);
+                
+                document.getElementById('matchInfo').innerHTML = `
+                    <p>🎯 Best Match: <strong>Set ${result.setCode}</strong></p>
+                    <p>📊 Accuracy: <strong>${result.matchPercent.toFixed(1)}%</strong></p>
+                `;
+                
+                document.getElementById('correctCount').innerHTML = `✅ सही: ${result.correctCount}`;
+                document.getElementById('wrongCount').innerHTML = `❌ गलत: ${result.wrongCount}`;
+                document.getElementById('unattemptedCount').innerHTML = `⭕ छोड़े: ${result.unattemptedCount}`;
+                
+                document.getElementById('resultCard').classList.add('show');
+                updateProgressSteps(4);
+                
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('checkBtn').disabled = false;
             }, 1000);
         }
 
@@ -1618,128 +1271,114 @@
 
         // ==================== UI UPDATE FUNCTIONS ====================
         function updateAllDropdowns() {
-            try {
-                // Student exam dropdown
-                const examSelect = document.getElementById('examSelect');
-                examSelect.innerHTML = '<option value="">-- Select Exam --</option>';
-                
-                // Admin exam dropdown
-                const adminExamSelect = document.getElementById('adminExamSelect');
-                adminExamSelect.innerHTML = '<option value="">-- Select exam --</option>';
-                
-                // Key set dropdown
-                const keySetSelect = document.getElementById('keySetSelect');
-                keySetSelect.innerHTML = '<option value="">-- Select set --</option>';
-                
-                examData.exams.forEach(exam => {
-                    examSelect.innerHTML += `<option value="${exam.id}">${exam.name} (${exam.totalQuestions} Q)</option>`;
-                    adminExamSelect.innerHTML += `<option value="${exam.id}">${exam.name} (${exam.totalQuestions} Q)</option>`;
-                });
+            const examSelect = document.getElementById('examSelect');
+            const adminExamSelect = document.getElementById('adminExamSelect');
+            const keySetSelect = document.getElementById('keySetSelect');
+            
+            examSelect.innerHTML = '<option value="">-- Select Exam --</option>';
+            adminExamSelect.innerHTML = '<option value="">-- Select exam --</option>';
+            keySetSelect.innerHTML = '<option value="">-- Select set --</option>';
+            
+            examData.exams.forEach(exam => {
+                examSelect.innerHTML += `<option value="${exam.id}">${exam.name} (${exam.totalQuestions} Q)</option>`;
+                adminExamSelect.innerHTML += `<option value="${exam.id}">${exam.name} (${exam.totalQuestions} Q)</option>`;
+            });
 
+            examData.sets.forEach(set => {
+                const shift = examData.shifts.find(s => s.id === set.shiftId);
+                const exam = examData.exams.find(e => e.id === shift?.examId);
+                if (exam && shift) {
+                    keySetSelect.innerHTML += `<option value="${set.id}">${exam.name} - Shift ${shift.shiftNumber} - Set ${set.setCode}</option>`;
+                }
+            });
+        }
+
+        function displayData() {
+            // Exams
+            const examsList = document.getElementById('examsList');
+            examsList.innerHTML = '<h4>📚 Exams:</h4>';
+            if (examData.exams.length === 0) {
+                examsList.innerHTML += '<p>कोई exam नहीं</p>';
+            } else {
+                examData.exams.forEach(exam => {
+                    examsList.innerHTML += `
+                        <div class="data-card">
+                            <button class="delete-btn" onclick="deleteExam('${exam.id}')">✖</button>
+                            <strong>${exam.name}</strong> - ${exam.date}<br>
+                            📊 ${exam.totalQuestions} Questions
+                        </div>
+                    `;
+                });
+            }
+
+            // Shifts
+            const shiftsList = document.getElementById('shiftsList');
+            shiftsList.innerHTML = '<h4>⏰ Shifts:</h4>';
+            if (examData.shifts.length === 0) {
+                shiftsList.innerHTML += '<p>कोई shift नहीं</p>';
+            } else {
+                examData.shifts.forEach(shift => {
+                    const exam = examData.exams.find(e => e.id === shift.examId);
+                    shiftsList.innerHTML += `
+                        <div class="data-card">
+                            <button class="delete-btn" onclick="deleteShift('${shift.id}')">✖</button>
+                            <strong>Shift ${shift.shiftNumber}</strong> - ${shift.time}<br>
+                            📚 ${exam?.name || 'Unknown'}
+                        </div>
+                    `;
+                });
+            }
+
+            // Sets
+            const setsList = document.getElementById('setsList');
+            setsList.innerHTML = '<h4>📋 Sets:</h4>';
+            if (examData.sets.length === 0) {
+                setsList.innerHTML += '<p>कोई set नहीं</p>';
+            } else {
                 examData.sets.forEach(set => {
                     const shift = examData.shifts.find(s => s.id === set.shiftId);
                     const exam = examData.exams.find(e => e.id === shift?.examId);
                     if (exam && shift) {
-                        keySetSelect.innerHTML += `<option value="${set.id}">${exam.name} - Shift ${shift.shiftNumber} - Set ${set.setCode}</option>`;
+                        setsList.innerHTML += `
+                            <div class="data-card">
+                                <button class="delete-btn" onclick="deleteSet('${set.id}')">✖</button>
+                                <strong>${exam.name}</strong> - Shift ${shift.shiftNumber}<br>
+                                Set ${set.setCode}
+                            </div>
+                        `;
                     }
                 });
-            } catch (error) {
-                console.error('Error updating dropdowns:', error);
+            }
+
+            // Answer Keys
+            const keysList = document.getElementById('keysList');
+            keysList.innerHTML = '<h4>🔑 Answer Keys:</h4>';
+            if (examData.answerKeys.length === 0) {
+                keysList.innerHTML += '<p>कोई answer key नहीं</p>';
+            } else {
+                examData.answerKeys.forEach(key => {
+                    const set = examData.sets.find(s => s.id === key.setId);
+                    const shift = examData.shifts.find(s => s.id === set?.shiftId);
+                    const exam = examData.exams.find(e => e.id === shift?.examId);
+                    
+                    if (exam && shift && set) {
+                        const answered = key.answers.filter(a => a !== '').length;
+                        keysList.innerHTML += `
+                            <div class="data-card">
+                                <button class="delete-btn" onclick="deleteAnswerKey('${key.id}')">✖</button>
+                                <strong>${exam.name}</strong> - Shift ${shift.shiftNumber} - Set ${set.setCode}<br>
+                                📊 ${answered}/${key.answers.length} answers
+                            </div>
+                        `;
+                    }
+                });
             }
         }
 
-        function displayData() {
-            try {
-                // Exams List
-                const examsList = document.getElementById('examsList');
-                examsList.innerHTML = '<h4>📚 Exams (Click ✖ to delete):</h4>';
-                if (examData.exams.length === 0) {
-                    examsList.innerHTML += '<p>कोई exam नहीं</p>';
-                } else {
-                    examData.exams.forEach(exam => {
-                        examsList.innerHTML += `
-                            <div class="data-card">
-                                <button class="delete-btn" onclick="deleteExam('${exam.id}')">✖</button>
-                                <strong>${exam.name}</strong> - ${exam.date}<br>
-                                📊 ${exam.totalQuestions} Questions
-                            </div>
-                        `;
-                    });
-                }
-
-                // Shifts List
-                const shiftsList = document.getElementById('shiftsList');
-                shiftsList.innerHTML = '<h4>⏰ Shifts (Click ✖ to delete):</h4>';
-                if (examData.shifts.length === 0) {
-                    shiftsList.innerHTML += '<p>कोई shift नहीं</p>';
-                } else {
-                    examData.shifts.forEach(shift => {
-                        const exam = examData.exams.find(e => e.id === shift.examId);
-                        shiftsList.innerHTML += `
-                            <div class="data-card">
-                                <button class="delete-btn" onclick="deleteShift('${shift.id}')">✖</button>
-                                <strong>Shift ${shift.shiftNumber}</strong> - ${shift.time}<br>
-                                📚 ${exam?.name || 'Unknown'}
-                            </div>
-                        `;
-                    });
-                }
-
-                // Sets List
-                const setsList = document.getElementById('setsList');
-                setsList.innerHTML = '<h4>📋 Sets (Click ✖ to delete):</h4>';
-                if (examData.sets.length === 0) {
-                    setsList.innerHTML += '<p>कोई set नहीं</p>';
-                } else {
-                    examData.sets.forEach(set => {
-                        const shift = examData.shifts.find(s => s.id === set.shiftId);
-                        const exam = examData.exams.find(e => e.id === shift?.examId);
-                        if (shift && exam) {
-                            setsList.innerHTML += `
-                                <div class="data-card">
-                                    <button class="delete-btn" onclick="deleteSet('${set.id}')">✖</button>
-                                    <strong>${exam.name}</strong> - Shift ${shift.shiftNumber}<br>
-                                    Set ${set.setCode}
-                                </div>
-                            `;
-                        }
-                    });
-                }
-
-                // Answer Keys List
-                const keysList = document.getElementById('keysList');
-                keysList.innerHTML = '<h4>🔑 Answer Keys (Click ✖ to delete):</h4>';
-                if (examData.answerKeys.length === 0) {
-                    keysList.innerHTML += '<p>कोई answer key नहीं</p>';
-                } else {
-                    examData.answerKeys.forEach(key => {
-                        const set = examData.sets.find(s => s.id === key.setId);
-                        const shift = set ? examData.shifts.find(s => s.id === set.shiftId) : null;
-                        const exam = shift ? examData.exams.find(e => e.id === shift.examId) : null;
-                        
-                        if (set && shift && exam) {
-                            const answeredCount = key.answers ? key.answers.filter(a => a !== '').length : 0;
-                            const totalCount = key.answers ? key.answers.length : 0;
-                            keysList.innerHTML += `
-                                <div class="data-card">
-                                    <button class="delete-btn" onclick="deleteAnswerKey('${key.id}')">✖</button>
-                                    <strong>${exam.name}</strong> - Shift ${shift.shiftNumber} - Set ${set.setCode}<br>
-                                    📊 ${answeredCount}/${totalCount} answers filled
-                                </div>
-                            `;
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error displaying data:', error);
-            }
-        }
-
-        // Initialize on load
+        // Initialize
         window.onload = function() {
             loadData();
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('examDate').value = today;
+            document.getElementById('examDate').value = new Date().toISOString().split('T')[0];
         };
     </script>
 </body>
